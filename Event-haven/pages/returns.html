@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Returns — Event Haven</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="tag"></span>
+      <div><strong>Event Haven</strong><span>RENTAL &amp; INVENTORY</span></div>
+    </div>
+
+    <nav>
+      <div class="nav-group-label">OVERVIEW</div>
+      <a class="nav-link" href="dashboard.html">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>
+        Dashboard
+      </a>
+
+      <div class="nav-group-label">OPERATIONS</div>
+      <a class="nav-link" href="inventory.html">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/></svg>
+        Inventory
+      </a>
+      <a class="nav-link" href="reservations.html">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="1"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>
+        Reservations
+      </a>
+      <a class="nav-link active" href="returns.html">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v6h6"/><path d="M4.5 13a8 8 0 1 0 2.3-6.6L4 10"/></svg>
+        Returns
+      </a>
+      <a class="nav-link" href="payments.html">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="13" rx="1"/><path d="M2 10h20"/></svg>
+        Payments &amp; Reports
+      </a>
+
+      <div class="nav-group-label" data-admin-only>ADMINISTRATION</div>
+      <a class="nav-link" href="staff.html" data-admin-only>
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="18" cy="8" r="2.4"/><path d="M15.5 14.3c2.6.4 4.5 2.5 4.5 5.7"/></svg>
+        Staff Accounts
+      </a>
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="avatar" data-user-avatar>JD</div>
+      <div class="who">
+        <strong data-user-name>Guest User</strong>
+        <span data-user-role>Staff</span>
+      </div>
+      <button type="button" data-logout title="Log out" aria-label="Log out">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <h1>Returns</h1>
+        <div class="crumbs">EVENT HAVEN / RELEASE &amp; RETURN</div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <div class="kpi-row">
+        <div class="kpi"><div class="label">DUE TODAY</div><div class="value" id="dueTodayCount">0</div></div>
+        <div class="kpi"><div class="label">OVERDUE</div><div class="value" id="overdueCount">0</div></div>
+        <div class="kpi"><div class="label">PROCESSED THIS WEEK</div><div class="value">31</div></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>Equipment on rent</h2></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Reservation</th><th>Client</th><th>Due back</th><th>Status</th><th></th></tr></thead>
+            <tbody id="returnsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="logoutModal">
+  <div class="modal">
+    <h3>Log out of Event Haven?</h3>
+    <p>You'll need to sign in again to manage inventory, reservations, or payments.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="logoutCancel">Cancel</button>
+      <button class="btn btn-danger" id="logoutConfirm">Log out</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+  EH.mountShell();
+
+  // Returns tracking derives its worklist from confirmed reservations —
+  // in the real system this would be its own rental_transactions table.
+  const RETURNS_SEED = [
+    { res:'RES-3298', client:'Ayala Corp. Townhall', due:'2026-09-25', status:'warn', label:'Due today' },
+    { res:'RES-3281', client:'Reyes Anniversary', due:'2026-09-23', status:'bad', label:'Overdue — 2 days' },
+    { res:'RES-3270', client:'Lopez Christening', due:'2026-09-24', status:'bad', label:'Overdue — 1 day' },
+    { res:'RES-3260', client:'Cruz Retirement Party', due:'2026-09-26', status:'warn', label:'Due today' },
+    { res:'RES-3255', client:'Mendoza Graduation', due:'2026-09-28', status:'neutral', label:'Scheduled' },
+  ];
+
+  let returns = JSON.parse(localStorage.getItem('eh_returns') || 'null') || RETURNS_SEED;
+
+  function render() {
+    document.getElementById('dueTodayCount').textContent = returns.filter(r => r.status === 'warn').length;
+    document.getElementById('overdueCount').textContent = returns.filter(r => r.status === 'bad').length;
+
+    document.getElementById('returnsBody').innerHTML = returns.map(r => `
+      <tr>
+        <td class="cell-primary">${r.res}</td>
+        <td>${r.client}</td>
+        <td>${r.due}</td>
+        <td><span class="tag-badge ${r.status}">${r.label}</span></td>
+        <td>
+          ${r.status !== 'good' ? `<button class="btn btn-ghost btn-sm" data-process="${r.res}">Mark returned</button>` : `<span class="cell-sub">Returned</span>`}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('returnsBody').addEventListener('click', (e) => {
+    const id = e.target.closest('[data-process]')?.dataset.process;
+    if (!id) return;
+    const r = returns.find(x => x.res === id);
+    r.status = 'good'; r.label = 'Returned';
+    localStorage.setItem('eh_returns', JSON.stringify(returns));
+    EH.toast(`${r.client}'s equipment marked as returned`);
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payments &amp; Reports — Event Haven</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="tag"></span>
+      <div><strong>Event Haven</strong><span>RENTAL &amp; INVENTORY</span></div>
+    </div>
+
+    <nav>
+      <div class="nav-group-label">OVERVIEW</div>
+      <a class="nav-link" href="dashboard.html">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>
+        Dashboard
+      </a>
+
+      <div class="nav-group-label">OPERATIONS</div>
+      <a class="nav-link" href="inventory.html">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/></svg>
+        Inventory
+      </a>
+      <a class="nav-link" href="reservations.html">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="1"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>
+        Reservations
+      </a>
+      <a class="nav-link" href="returns.html">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v6h6"/><path d="M4.5 13a8 8 0 1 0 2.3-6.6L4 10"/></svg>
+        Returns
+      </a>
+      <a class="nav-link active" href="payments.html">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="13" rx="1"/><path d="M2 10h20"/></svg>
+        Payments &amp; Reports
+      </a>
+
+      <div class="nav-group-label" data-admin-only>ADMINISTRATION</div>
+      <a class="nav-link" href="staff.html" data-admin-only>
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="18" cy="8" r="2.4"/><path d="M15.5 14.3c2.6.4 4.5 2.5 4.5 5.7"/></svg>
+        Staff Accounts
+      </a>
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="avatar" data-user-avatar>JD</div>
+      <div class="who">
+        <strong data-user-name>Guest User</strong>
+        <span data-user-role>Staff</span>
+      </div>
+      <button type="button" data-logout title="Log out" aria-label="Log out">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <h1>Payments &amp; Reports</h1>
+        <div class="crumbs">EVENT HAVEN / FINANCE</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost btn-sm" id="exportBtn">Export report (CSV)</button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <div class="kpi-row">
+        <div class="kpi"><div class="label">TOTAL COLLECTED</div><div class="value" id="totalPaid">₱0</div></div>
+        <div class="kpi"><div class="label">PENDING BALANCE</div><div class="value" id="totalPending">₱0</div></div>
+        <div class="kpi accent"><div class="label">OVERDUE PAYMENTS</div><div class="value" id="overdueCount">0</div></div>
+      </div>
+
+      <div class="panel">
+        <div class="toolbar">
+          <select class="select-chip" id="payStatus">
+            <option value="">All statuses</option>
+            <option value="good">Paid</option>
+            <option value="warn">Partial</option>
+            <option value="bad">Overdue</option>
+          </select>
+          <div class="spacer"></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Payment ID</th><th>Client</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="payBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="logoutModal">
+  <div class="modal">
+    <h3>Log out of Event Haven?</h3>
+    <p>You'll need to sign in again to manage inventory, reservations, or payments.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="logoutCancel">Cancel</button>
+      <button class="btn btn-danger" id="logoutConfirm">Log out</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+  EH.mountShell();
+
+  const payments = EH.store.getPayments();
+
+  function render() {
+    const status = document.getElementById('payStatus').value;
+    const rows = payments.filter(p => !status || p.status === status);
+
+    document.getElementById('payBody').innerHTML = rows.map(p => `
+      <tr>
+        <td class="cell-sub">${p.id}</td>
+        <td class="cell-primary">${p.client}</td>
+        <td>${EH.peso(p.amount)}</td>
+        <td>${p.method}</td>
+        <td>${p.date}</td>
+        <td><span class="tag-badge ${p.status}">${p.label}</span></td>
+      </tr>
+    `).join('');
+
+    const paid = payments.filter(p => p.status === 'good').reduce((s,p) => s + p.amount, 0);
+    const pending = payments.filter(p => p.status !== 'good').reduce((s,p) => s + p.amount, 0);
+    document.getElementById('totalPaid').textContent = EH.peso(paid);
+    document.getElementById('totalPending').textContent = EH.peso(pending);
+    document.getElementById('overdueCount').textContent = payments.filter(p => p.status === 'bad').length;
+  }
+
+  document.getElementById('payStatus').addEventListener('input', render);
+
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    const header = 'Payment ID,Client,Amount,Method,Date,Status\n';
+    const body = payments.map(p => `${p.id},${p.client},${p.amount},${p.method},${p.date},${p.label}`).join('\n');
+    const blob = new Blob([header + body], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'event-haven-payments.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    EH.toast('Report exported');
+  });
+
+  render();
+</script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Staff Accounts — Event Haven</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="tag"></span>
+      <div><strong>Event Haven</strong><span>RENTAL &amp; INVENTORY</span></div>
+    </div>
+
+    <nav>
+      <div class="nav-group-label">OVERVIEW</div>
+      <a class="nav-link" href="dashboard.html">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>
+        Dashboard
+      </a>
+
+      <div class="nav-group-label">OPERATIONS</div>
+      <a class="nav-link" href="inventory.html">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/></svg>
+        Inventory
+      </a>
+      <a class="nav-link" href="reservations.html">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="1"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>
+        Reservations
+      </a>
+      <a class="nav-link" href="returns.html">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v6h6"/><path d="M4.5 13a8 8 0 1 0 2.3-6.6L4 10"/></svg>
+        Returns
+      </a>
+      <a class="nav-link" href="payments.html">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="13" rx="1"/><path d="M2 10h20"/></svg>
+        Payments &amp; Reports
+      </a>
+
+      <div class="nav-group-label" data-admin-only>ADMINISTRATION</div>
+      <a class="nav-link active" href="staff.html" data-admin-only>
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 3-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="18" cy="8" r="2.4"/><path d="M15.5 14.3c2.6.4 4.5 2.5 4.5 5.7"/></svg>
+        Staff Accounts
+      </a>
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="avatar" data-user-avatar>JD</div>
+      <div class="who">
+        <strong data-user-name>Guest User</strong>
+        <span data-user-role>Staff</span>
+      </div>
+      <button type="button" data-logout title="Log out" aria-label="Log out">
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <h1>Staff Accounts</h1>
+        <div class="crumbs">EVENT HAVEN / ADMINISTRATION</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-accent btn-sm" id="openAddStaff">+ Add Staff</button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <div class="panel">
+        <div class="panel-head"><h2>Team members</h2></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Staff ID</th><th>Name</th><th>Role</th><th>Email</th><th>Status</th><th></th></tr></thead>
+            <tbody id="staffBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="addModal">
+  <div class="modal" style="max-width:420px;">
+    <h3>Add staff account</h3>
+    <p>New accounts default to Staff-level access. Promote to Administrator once verified.</p>
+    <form id="addForm">
+      <div class="field"><label for="stfName">Full name</label><input id="stfName" required placeholder="e.g. Fuentes, Almond"></div>
+      <div class="field"><label for="stfEmail">Email</label><input id="stfEmail" type="email" required placeholder="name@eventhaven.ph"></div>
+      <div class="field"><label for="stfRole">Role</label>
+        <select id="stfRole">
+          <option value="Staff">Staff</option>
+          <option value="Administrator">Administrator</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="addCancel">Cancel</button>
+        <button type="submit" class="btn btn-primary" style="width:auto;">Create account</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="logoutModal">
+  <div class="modal">
+    <h3>Log out of Event Haven?</h3>
+    <p>You'll need to sign in again to manage inventory, reservations, or payments.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="logoutCancel">Cancel</button>
+      <button class="btn btn-danger" id="logoutConfirm">Log out</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+  EH.mountShell();
+
+  let staff = EH.store.getStaff();
+
+  function render() {
+    document.getElementById('staffBody').innerHTML = staff.map(s => `
+      <tr>
+        <td class="cell-sub">${s.id}</td>
+        <td class="cell-primary">${s.name}</td>
+        <td><span class="tag-badge ${s.role === 'Administrator' ? 'warn' : 'neutral'}">${s.role}</span></td>
+        <td class="cell-sub">${s.email}</td>
+        <td><span class="tag-badge ${s.status}">${s.status === 'good' ? 'Active' : 'Invited'}</span></td>
+        <td>
+          <div class="row-actions">
+            <button class="icon-btn" title="Deactivate" data-remove="${s.id}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('staffBody').addEventListener('click', (e) => {
+    const id = e.target.closest('[data-remove]')?.dataset.remove;
+    if (!id) return;
+    const person = staff.find(s => s.id === id);
+    staff = staff.filter(s => s.id !== id);
+    EH.store.setStaff(staff);
+    EH.toast(`${person.name}'s account deactivated`);
+    render();
+  });
+
+  const addModal = document.getElementById('addModal');
+  document.getElementById('openAddStaff').addEventListener('click', () => addModal.classList.add('open'));
+  document.getElementById('addCancel').addEventListener('click', () => addModal.classList.remove('open'));
+  addModal.addEventListener('click', (e) => { if (e.target === addModal) addModal.classList.remove('open'); });
+
+  document.getElementById('addForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('stfName').value.trim();
+    const email = document.getElementById('stfEmail').value.trim();
+    const role = document.getElementById('stfRole').value;
+    if (!name || !email) return;
+
+    const nextId = 'STF-' + Math.floor(100 + Math.random() * 899);
+    staff.unshift({ id: nextId, name, role, email, status: 'neutral' });
+    EH.store.setStaff(staff);
+    e.target.reset();
+    addModal.classList.remove('open');
+    EH.toast(`Account created for ${name}`);
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>
