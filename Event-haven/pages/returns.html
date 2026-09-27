@@ -104,8 +104,6 @@
 <script>
   EH.mountShell();
 
-  // Returns tracking derives its worklist from confirmed reservations —
-  // in the real system this would be its own rental_transactions table.
   const RETURNS_SEED = [
     { res:'RES-3298', client:'Ayala Corp. Townhall', due:'2026-09-25', status:'warn', label:'Due today' },
     { res:'RES-3281', client:'Reyes Anniversary', due:'2026-09-23', status:'bad', label:'Overdue — 2 days' },
