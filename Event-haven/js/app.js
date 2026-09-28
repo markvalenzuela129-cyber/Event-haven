@@ -1,11 +1,3 @@
-/* =========================================================
-   EVENT HAVEN — shared front-end logic
-   Front-end only: all "persistence" below is localStorage,
-   standing in for the MySQL database described in the proposal.
-   Swap EH.store's methods for real fetch() calls to your PHP
-   endpoints when the back end is ready.
-   ========================================================= */
-
 const EH = (() => {
 
   const KEYS = {
@@ -101,8 +93,6 @@ const EH = (() => {
     return '₱' + Number(n).toLocaleString('en-PH');
   }
 
-  // Paints the logged-in user into the sidebar + wires the logout modal.
-  // Call once on every app-shell page, after DOMContentLoaded.
   function mountShell() {
     const session = store.getSession() || { name: 'Guest User', role: 'Staff' };
     const who = document.querySelector('[data-user-name]');

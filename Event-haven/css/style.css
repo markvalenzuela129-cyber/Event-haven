@@ -51,9 +51,6 @@ a { color: inherit; }
   background-size: 34px 34px;
 }
 
-/* =========================================================
-   AUTH / LOGIN
-   ========================================================= */
 .auth-screen {
   min-height: 100vh;
   display: grid;
@@ -266,9 +263,6 @@ button:focus-visible, a:focus-visible {
 }
 .form-note.show { display: block; }
 
-/* =========================================================
-   APP SHELL
-   ========================================================= */
 .app {
   display: grid;
   grid-template-columns: var(--sidebar-w) 1fr;
@@ -433,9 +427,6 @@ button:focus-visible, a:focus-visible {
   flex: 1;
 }
 
-/* =========================================================
-   CARDS / KPIs
-   ========================================================= */
 .kpi-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -499,9 +490,6 @@ button:focus-visible, a:focus-visible {
   gap: 20px;
 }
 
-/* =========================================================
-   TABLES
-   ========================================================= */
 .table-wrap { overflow-x: auto; }
 
 table {
@@ -597,9 +585,6 @@ tbody tr:hover { background: var(--canvas); }
 
 .spacer { flex: 1; }
 
-/* =========================================================
-   MODAL
-   ========================================================= */
 .modal-backdrop {
   position: fixed; inset: 0;
   background: rgba(27,42,47,0.45);
@@ -656,9 +641,6 @@ tbody tr:hover { background: var(--canvas); }
 .toast.show { transform: translateY(0); opacity: 1; }
 .toast .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
 
-/* =========================================================
-   MISC
-   ========================================================= */
 .progress-track {
   height: 6px; background: var(--line); border-radius: 3px; overflow: hidden;
 }
