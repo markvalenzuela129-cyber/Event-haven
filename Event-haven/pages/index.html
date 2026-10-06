@@ -1,71 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Event Haven — Sign In</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
 <div class="auth-screen">
 
-  <section class="auth-brand floor-pattern">
-    <div class="auth-mark">
-      <span class="tag"></span> EVENT HAVEN · RENTAL &amp; INVENTORY
-    </div>
+    <!-- LEFT SIDE -->
+    <section class="auth-brand floor-pattern">
 
-    <div class="auth-headline">
-      <h1>Manage every event with ease.</h1>
-      <p>
-        Track inventory, approve reservations, record payments, and keep maintenance
-        on schedule — from one shared system your whole team can trust.
-      </p>
-    </div>
-  </section>
-
-  <section class="auth-panel">
-    <div class="auth-card">
-      <h2>Welcome back</h2>
-      <p class="sub">Sign in to manage today's rentals.</p>
-
-      <div class="role-switch" role="tablist" aria-label="Sign in as">
-        <button type="button" class="active" data-role="Administrator" role="tab" aria-selected="true">
-          Administrator
-        </button>
-
-        <button type="button" data-role="Staff" role="tab" aria-selected="false">
-          Staff Member
-        </button>
-      </div>
-
-      <form id="loginForm" novalidate>
-        <div class="field">
-          <label for="username">Username or email</label>
-          <input id="username" name="username" type="text"
-                 placeholder="j.delacruz"
-                 autocomplete="username" required>
+        <div class="auth-mark">
+            <span class="tag"></span>
+            EVENT HAVEN · RENTAL &amp; INVENTORY
         </div>
 
-        <div class="field">
-          <label for="password">Password</label>
-          <input id="password" name="password" type="password"
-                 placeholder="••••••••"
-                 autocomplete="current-password" required>
+        <div class="auth-headline">
+
+            <h1>Manage every event with ease.</h1>
+
+            <p>
+                Track inventory, approve reservations, record payments,
+                and keep maintenance on schedule — from one shared system
+                your whole team can trust.
+            </p>
+
         </div>
 
-        <p class="form-note" id="loginError">
-          Enter a username and password to continue.
-        </p>
+    </section>
 
-        <div class="field-row">
-          <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:var(--muted);">
-            <input type="checkbox" style="width:auto;">
-            Keep me signed in
-          </label>
 
-          <a href="#" style="color:var(--brand);font-weight:600;text-decoration:none;">
-            Forgot password?
-          </a>
+    <!-- RIGHT SIDE -->
+    <section class="auth-panel">
+
+        <div class="auth-card">
+
+            <h2>Welcome back</h2>
+
+            <p class="sub">
+                Sign in to manage today's rentals.
+            </p>
+
+
+            <!-- ROLE SWITCH -->
+            <div
+                class="role-switch"
+                role="tablist"
+                aria-label="Sign in as">
+
+                <button
+                    type="button"
+                    class="active"
+                    data-role="Administrator"
+                    role="tab"
+                    aria-selected="true">
+
+                    Administrator
+
+                </button>
+
+                <button
+                    type="button"
+                    data-role="Staff"
+                    role="tab"
+                    aria-selected="false">
+
+                    Staff Member
+
+                </button>
+
+            </div>
+
+
+            <!-- LOGIN FORM -->
+            <form id="loginForm" novalidate>
+
+                <div class="field">
+
+                    <label for="username">
+                        Username or email
+                    </label>
+
+                    <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        placeholder="j.delacruz"
+                        autocomplete="username"
+                        required>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        placeholder="••••••••"
+                        autocomplete="current-password"
+                        required>
+
+                </div>
+
+
+                <p
+                    class="form-note"
+                    id="loginError">
+
+                    Enter a username and password to continue.
+
+                </p>
+
+
+                <div class="field-row">
+
+                    <label
+                        style="
+                            display:flex;
+                            align-items:center;
+                            gap:7px;
+                            font-size:13px;
+                            color:var(--muted);
+                        ">
+
+                        <input
+                            type="checkbox"
+                            style="width:auto;">
+
+                        Keep me signed in
+
+                    </label>
+
+
+                    <a
+                        href="#"
+                        style="
+                            color:var(--brand);
+                            font-weight:600;
+                            text-decoration:none;
+                        ">
+
+                        Forgot password?
+
+                    </a>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    Sign in
+
+                </button>
+
+            </form>
+
+
+            <!-- FOOTER -->
+            <p class="auth-foot">
+                Event Haven · BSIT3C · Web System Development
+                and Technologies II
+            </p>
+
         </div>
 
-        <button type="submit" class="btn btn-primary">
-          Sign in
-        </button>
-      </form>
-
-      <p>Event Haven · BSIT3C · Web System Development and Technologies II</p>
-    </div>
-  </section>
+    </section>
 
 </div>
+
+
+<script src="../js/app.js"></script>
+
+<script>
+
+    let selectedRole = 'Administrator';
+
+
+    /* ROLE SWITCH */
+
+    document
+        .querySelectorAll('.role-switch button')
+        .forEach(btn => {
+
+            btn.addEventListener('click', () => {
+
+                document
+                    .querySelectorAll('.role-switch button')
+                    .forEach(b => {
+
+                        b.classList.remove('active');
+
+                        b.setAttribute(
+                            'aria-selected',
+                            'false'
+                        );
+
+                    });
+
+
+                btn.classList.add('active');
+
+                btn.setAttribute(
+                    'aria-selected',
+                    'true'
+                );
+
+
+                selectedRole = btn.dataset.role;
+
+            });
+
+        });
+
+
+    /* LOGIN */
+
+    document
+        .getElementById('loginForm')
+        .addEventListener('submit', (e) => {
+
+            e.preventDefault();
+
+
+            const username =
+                document
+                    .getElementById('username')
+                    .value
+                    .trim();
+
+
+            const password =
+                document
+                    .getElementById('password')
+                    .value
+                    .trim();
+
+
+            const errorNote =
+                document.getElementById('loginError');
+
+
+            if (!username || !password) {
+
+                errorNote.classList.add('show');
+
+                return;
+
+            }
+
+
+            errorNote.classList.remove('show');
+
+
+            const displayName =
+                username
+                    .replace(/[._]/g, ' ')
+                    .replace(/\b\w/g, c =>
+                        c.toUpperCase()
+                    );
+
+
+            if (
+                typeof EH !== 'undefined' &&
+                EH.store &&
+                typeof EH.store.setSession === 'function'
+            ) {
+
+                EH.store.setSession({
+
+                    name: displayName || 'Team Member',
+
+                    role: selectedRole
+
+                });
+
+            }
+
+
+            window.location.href = 'dashboard.html';
+
+        });
+
+</script>
+
+</body>
+
+</html>
