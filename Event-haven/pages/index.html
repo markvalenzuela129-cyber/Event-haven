@@ -7,296 +7,368 @@
 
     <title>Event Haven — Sign In</title>
 
+    <!-- Event Haven Stylesheet -->
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
 
-<div class="auth-screen">
+    <div class="auth-screen">
 
-    <!-- LEFT SIDE -->
-    <section class="auth-brand floor-pattern">
+        <!-- =========================================
+             LEFT SIDE - BRANDING
+        ========================================== -->
+        <section class="auth-brand floor-pattern">
 
-        <div class="auth-mark">
-            <span class="tag"></span>
-            EVENT HAVEN · RENTAL &amp; INVENTORY
-        </div>
-
-        <div class="auth-headline">
-
-            <h1>Manage every event with ease.</h1>
-
-            <p>
-                Track inventory, approve reservations, record payments,
-                and keep maintenance on schedule — from one shared system
-                your whole team can trust.
-            </p>
-
-        </div>
-
-    </section>
-
-
-    <!-- RIGHT SIDE -->
-    <section class="auth-panel">
-
-        <div class="auth-card">
-
-            <h2>Welcome back</h2>
-
-            <p class="sub">
-                Sign in to manage today's rentals.
-            </p>
-
-
-            <!-- ROLE SWITCH -->
-            <div
-                class="role-switch"
-                role="tablist"
-                aria-label="Sign in as">
-
-                <button
-                    type="button"
-                    class="active"
-                    data-role="Administrator"
-                    role="tab"
-                    aria-selected="true">
-
-                    Administrator
-
-                </button>
-
-                <button
-                    type="button"
-                    data-role="Staff"
-                    role="tab"
-                    aria-selected="false">
-
-                    Staff Member
-
-                </button>
-
+            <!-- Event Haven Logo / Brand -->
+            <div class="auth-mark">
+                <span class="tag"></span>
+                EVENT HAVEN · RENTAL &amp; INVENTORY
             </div>
 
 
-            <!-- LOGIN FORM -->
-            <form id="loginForm" novalidate>
+            <!-- Main Headline -->
+            <div class="auth-headline">
 
-                <div class="field">
+                <h1>
+                    Manage every event with ease.
+                </h1>
 
-                    <label for="username">
-                        Username or email
-                    </label>
+                <p>
+                    Track inventory, approve reservations, record payments,
+                    and keep maintenance on schedule — from one shared system
+                    your whole team can trust.
+                </p>
 
-                    <input
-                        id="username"
-                        name="username"
-                        type="text"
-                        placeholder="j.delacruz"
-                        autocomplete="username"
-                        required>
+            </div>
 
-                </div>
+        </section>
 
 
-                <div class="field">
+        <!-- =========================================
+             RIGHT SIDE - LOGIN
+        ========================================== -->
+        <section class="auth-panel">
 
-                    <label for="password">
-                        Password
-                    </label>
+            <div class="auth-card">
 
-                    <input
-                        id="password"
-                        name="password"
-                        type="password"
-                        placeholder="••••••••"
-                        autocomplete="current-password"
-                        required>
+                <!-- Welcome -->
+                <h2>
+                    Welcome back
+                </h2>
 
-                </div>
-
-
-                <p
-                    class="form-note"
-                    id="loginError">
-
-                    Enter a username and password to continue.
-
+                <p class="sub">
+                    Sign in to manage today's rentals.
                 </p>
 
 
-                <div class="field-row">
+                <!-- =====================================
+                     USER ROLE
+                ====================================== -->
+                <div
+                    class="role-switch"
+                    role="tablist"
+                    aria-label="Sign in as">
 
-                    <label
-                        style="
-                            display:flex;
-                            align-items:center;
-                            gap:7px;
-                            font-size:13px;
-                            color:var(--muted);
-                        ">
+                    <button
+                        type="button"
+                        class="active"
+                        data-role="Administrator"
+                        role="tab"
+                        aria-selected="true">
 
-                        <input
-                            type="checkbox"
-                            style="width:auto;">
+                        Administrator
 
-                        Keep me signed in
+                    </button>
 
-                    </label>
+                    <button
+                        type="button"
+                        data-role="Staff"
+                        role="tab"
+                        aria-selected="false">
 
+                        Staff Member
 
-                    <a
-                        href="#"
-                        style="
-                            color:var(--brand);
-                            font-weight:600;
-                            text-decoration:none;
-                        ">
-
-                        Forgot password?
-
-                    </a>
+                    </button>
 
                 </div>
 
 
-                <button
-                    type="submit"
-                    class="btn btn-primary">
+                <!-- =====================================
+                     LOGIN FORM
+                ====================================== -->
+                <form id="loginForm" novalidate>
 
-                    Sign in
+                    <!-- Username -->
+                    <div class="field">
 
-                </button>
+                        <label for="username">
+                            Username or email
+                        </label>
 
-            </form>
+                        <input
+                            id="username"
+                            name="username"
+                            type="text"
+                            placeholder="j.delacruz"
+                            autocomplete="username"
+                            required>
 
-
-            <!-- FOOTER -->
-            <p class="auth-foot">
-                Event Haven · BSIT3C · Web System Development
-                and Technologies II
-            </p>
-
-        </div>
-
-    </section>
-
-</div>
-
-
-<script src="../js/app.js"></script>
-
-<script>
-
-    let selectedRole = 'Administrator';
+                    </div>
 
 
-    /* ROLE SWITCH */
+                    <!-- Password -->
+                    <div class="field">
 
-    document
-        .querySelectorAll('.role-switch button')
-        .forEach(btn => {
+                        <label for="password">
+                            Password
+                        </label>
 
-            btn.addEventListener('click', () => {
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            placeholder="••••••••"
+                            autocomplete="current-password"
+                            required>
 
-                document
-                    .querySelectorAll('.role-switch button')
-                    .forEach(b => {
-
-                        b.classList.remove('active');
-
-                        b.setAttribute(
-                            'aria-selected',
-                            'false'
-                        );
-
-                    });
+                    </div>
 
 
-                btn.classList.add('active');
+                    <!-- Login Error -->
+                    <p
+                        class="form-note"
+                        id="loginError">
 
-                btn.setAttribute(
-                    'aria-selected',
-                    'true'
-                );
+                        Enter a username and password to continue.
 
-
-                selectedRole = btn.dataset.role;
-
-            });
-
-        });
+                    </p>
 
 
-    /* LOGIN */
+                    <!-- Remember / Forgot Password -->
+                    <div class="field-row">
 
-    document
-        .getElementById('loginForm')
-        .addEventListener('submit', (e) => {
+                        <label
+                            style="
+                                display: flex;
+                                align-items: center;
+                                gap: 7px;
+                                font-size: 13px;
+                                color: var(--muted);
+                            ">
 
-            e.preventDefault();
+                            <input
+                                type="checkbox"
+                                style="width: auto;">
 
+                            Keep me signed in
 
-            const username =
-                document
-                    .getElementById('username')
-                    .value
-                    .trim();
-
-
-            const password =
-                document
-                    .getElementById('password')
-                    .value
-                    .trim();
+                        </label>
 
 
-            const errorNote =
-                document.getElementById('loginError');
+                        <a
+                            href="#"
+                            style="
+                                color: var(--brand);
+                                font-weight: 600;
+                                text-decoration: none;
+                            ">
+
+                            Forgot password?
+
+                        </a>
+
+                    </div>
 
 
-            if (!username || !password) {
+                    <!-- Sign In -->
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
 
-                errorNote.classList.add('show');
+                        Sign in
 
-                return;
+                    </button>
 
-            }
-
-
-            errorNote.classList.remove('show');
+                </form>
 
 
-            const displayName =
-                username
-                    .replace(/[._]/g, ' ')
-                    .replace(/\b\w/g, c =>
-                        c.toUpperCase()
+                <!-- =====================================
+                     FOOTER
+                ====================================== -->
+                <p class="auth-foot">
+                    Event Haven · BSIT3C · Web System Development
+                    and Technologies II
+                </p>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- =========================================
+         JAVASCRIPT
+    ========================================== -->
+    <script src="../js/app.js"></script>
+
+
+    <script>
+
+        /* =========================================
+           DEFAULT ROLE
+        ========================================== */
+
+        let selectedRole = 'Administrator';
+
+
+        /* =========================================
+           ROLE SWITCH
+        ========================================== */
+
+        document
+            .querySelectorAll('.role-switch button')
+            .forEach(function (button) {
+
+                button.addEventListener('click', function () {
+
+                    /*
+                     * Remove active state
+                     * from both buttons
+                     */
+                    document
+                        .querySelectorAll('.role-switch button')
+                        .forEach(function (item) {
+
+                            item.classList.remove('active');
+
+                            item.setAttribute(
+                                'aria-selected',
+                                'false'
+                            );
+
+                        });
+
+
+                    /*
+                     * Activate clicked button
+                     */
+                    button.classList.add('active');
+
+                    button.setAttribute(
+                        'aria-selected',
+                        'true'
                     );
 
 
-            if (
-                typeof EH !== 'undefined' &&
-                EH.store &&
-                typeof EH.store.setSession === 'function'
-            ) {
-
-                EH.store.setSession({
-
-                    name: displayName || 'Team Member',
-
-                    role: selectedRole
+                    /*
+                     * Save selected role
+                     */
+                    selectedRole = button.dataset.role;
 
                 });
 
-            }
+            });
 
 
-            window.location.href = 'dashboard.html';
+        /* =========================================
+           LOGIN FORM
+        ========================================== */
 
-        });
+        document
+            .getElementById('loginForm')
+            .addEventListener('submit', function (event) {
 
-</script>
+                /*
+                 * Prevent normal form submission
+                 */
+                event.preventDefault();
+
+
+                /*
+                 * Get username
+                 */
+                const username =
+                    document
+                        .getElementById('username')
+                        .value
+                        .trim();
+
+
+                /*
+                 * Get password
+                 */
+                const password =
+                    document
+                        .getElementById('password')
+                        .value
+                        .trim();
+
+
+                /*
+                 * Get error message
+                 */
+                const errorNote =
+                    document.getElementById('loginError');
+
+
+                /*
+                 * Check if fields are empty
+                 */
+                if (!username || !password) {
+
+                    errorNote.classList.add('show');
+
+                    return;
+                }
+
+
+                /*
+                 * Hide error
+                 */
+                errorNote.classList.remove('show');
+
+
+                /*
+                 * Convert username to display name
+                 */
+                const displayName =
+                    username
+                        .replace(/[._]/g, ' ')
+                        .replace(/\b\w/g, function (character) {
+                            return character.toUpperCase();
+                        });
+
+
+                /*
+                 * Save session
+                 */
+                if (
+                    typeof EH !== 'undefined' &&
+                    EH.store &&
+                    typeof EH.store.setSession === 'function'
+                ) {
+
+                    EH.store.setSession({
+
+                        name: displayName || 'Team Member',
+
+                        role: selectedRole
+
+                    });
+
+                }
+
+
+                /*
+                 * Go to dashboard
+                 */
+                window.location.href = 'dashboard.html';
+
+            });
+
+    </script>
 
 </body>
 
