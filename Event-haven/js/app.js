@@ -79,8 +79,9 @@ const EH = (() => {
 
   function toast(message) {
     let node = document.querySelector('.toast');
+    
     if (!node) {
-      node = el(<div class="toast"><span class="dot"></span><span class="msg"></span></div>);
+      node = el(`<div class="toast"><span class="dot"></span><span class="msg"></span></div>`);
       document.body.appendChild(node);
     }
     node.querySelector('.msg').textContent = message;

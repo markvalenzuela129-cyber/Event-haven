@@ -111,7 +111,7 @@
 
 <div class="modal-backdrop" id="addModal">
   <div class="modal" style="max-width:460px;">
-    <h3>Add equipment</h3>
+    <h3 id="equipmentModalTitle">Add equipment</h3>
     <p>Register a new item into the shared inventory database.</p>
     <form id="addForm">
       <div class="field"><label for="eqName">Item name</label><input id="eqName" required placeholder="e.g. Cocktail Table"></div>
@@ -126,7 +126,8 @@
       <div class="field"><label for="eqTotal">Total units</label><input id="eqTotal" type="number" min="1" required placeholder="e.g. 20"></div>
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost" id="addCancel">Cancel</button>
-        <button type="submit" class="btn btn-primary" style="width:auto;">Save item</button>
+        <button type="submit" class="btn btn-primary" style="width:auto;" id="equipmentSubmit">
+          Save item</button>
       </div>
     </form>
   </div>
@@ -147,12 +148,41 @@
 <script>
   EH.mountShell();
 
-  let equipment = EH.store.getEquipment();
-
+  let equipment = [];
+  let editingId = null;
+  const addModal = document.getElementById('addModal');
   const catSelect = document.getElementById('invCategory');
-  [...new Set(equipment.map(e => e.category))].forEach(c => {
-    catSelect.insertAdjacentHTML('beforeend', `<option value="${c}">${c}</option>`);
-  });
+
+  async function loadEquipment() {
+  try {
+    const response = await fetch('../database/equipment.php');
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.message || 'Failed to load equipment');
+    }
+
+    equipment = data.equipment;
+
+  catSelect.innerHTML = '<option value="">All categories</option>';
+
+     [...new Set(equipment.map(e => e.category))].forEach(c => {
+       catSelect.insertAdjacentHTML(
+         'beforeend',
+         `<option value="${c}">${c}</option>`
+       );
+     });
+
+    render();
+
+  } catch (error) {
+
+    console.error(error);
+
+    EH.toast('Failed to load equipment from database');
+  }
+}
 
   function statusLabel(s) {
     return s === 'good' ? 'Well stocked' : s === 'warn' ? 'Low stock' : 'Critical';
@@ -163,18 +193,24 @@
     const cat = catSelect.value;
     const status = document.getElementById('invStatus').value;
 
-    const rows = equipment.filter(e =>
-      (!q || e.name.toLowerCase().includes(q) || e.id.toLowerCase().includes(q)) &&
-      (!cat || e.category === cat) &&
-      (!status || e.status === status)
-    );
+  const rows = equipment.filter(e =>
+    (!q ||
+    e.name.toLowerCase().includes(q) ||
+    String(e.id).includes(q) ||
+    e.code.toLowerCase().includes(q)
+    ) &&
+    (!cat || e.category === cat) &&
+    (!status || e.status === status)
+  );
+
+
 
     document.getElementById('invCount').textContent = `${rows.length} of ${equipment.length} items`;
     document.getElementById('invEmpty').style.display = rows.length ? 'none' : 'block';
 
     document.getElementById('invBody').innerHTML = rows.map(e => `
       <tr>
-        <td><div class="cell-primary">${e.name}</div><div class="cell-sub">${e.id}</div></td>
+        <td><div class="cell-primary">${e.name}</div><div class="cell-sub">${e.code}</div></td>
         <td>${e.category}</td>
         <td>${e.total}</td>
         <td>${e.available}</td>
@@ -198,42 +234,259 @@
     document.getElementById(id).addEventListener('input', render)
   );
 
-  document.getElementById('invBody').addEventListener('click', (e) => {
-    const removeId = e.target.closest('[data-remove]')?.dataset.remove;
-    const editId = e.target.closest('[data-edit]')?.dataset.edit;
-    if (removeId) {
-      equipment = equipment.filter(item => item.id !== removeId);
-      EH.store.setEquipment(equipment);
-      EH.toast('Equipment removed from inventory');
-      render();
-    }
-    if (editId) {
-      EH.toast('Editing is wired up for the add-item flow — hook this button to the same form for full edit support.');
-    }
-  });
+  document.getElementById('invBody').addEventListener('click', async (e) => {
 
-  const addModal = document.getElementById('addModal');
+  const removeButton = e.target.closest('[data-remove]');
+  const editButton = e.target.closest('[data-edit]');
+
+  /*
+   * REMOVE
+   */
+  if (removeButton) {
+
+    const removeId = removeButton.dataset.remove;
+
+    const item = equipment.find(
+      item => String(item.id) === String(removeId)
+    );
+
+    if (!item) {
+      EH.toast('Equipment not found');
+      return;
+    }
+
+    const confirmed = confirm(
+      `Are you sure you want to remove "${item.name}"?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+
+      const response = await fetch('../database/equipment.php', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: removeId
+        })
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message || 'Failed to remove equipment');
+      }
+
+      EH.toast(`${item.name} removed from inventory`);
+
+      await loadEquipment();
+
+    } catch (error) {
+
+      console.error(error);
+
+      EH.toast('Failed to remove equipment');
+    }
+
+    return;
+  }
+
+
+  /*
+   * EDIT
+   */
+  if (editButton) {
+
+  const editId = editButton.dataset.edit;
+
+  const item = equipment.find(
+    item => String(item.id) === String(editId)
+  );
+
+  if (!item) {
+    EH.toast('Equipment not found');
+    return;
+  }
+
+  editingId = item.id;
+
+  document.getElementById('equipmentModalTitle').textContent =
+    'Edit equipment';
+
+  document.getElementById('equipmentSubmit').textContent =
+    'Update item';
+
+  document.getElementById('eqName').value =
+    item.name;
+
+  document.getElementById('eqCategory').value =
+    item.category;
+
+  document.getElementById('eqTotal').value =
+    item.total;
+
+  addModal.classList.add('open');
+}
+
+});
+  
   document.getElementById('openAddEquipment').addEventListener('click', () => addModal.classList.add('open'));
   document.getElementById('addCancel').addEventListener('click', () => addModal.classList.remove('open'));
   addModal.addEventListener('click', (e) => { if (e.target === addModal) addModal.classList.remove('open'); });
 
-  document.getElementById('addForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = document.getElementById('eqName').value.trim();
-    const category = document.getElementById('eqCategory').value;
-    const total = parseInt(document.getElementById('eqTotal').value, 10);
-    if (!name || !total) return;
+  document.getElementById('addForm').addEventListener('submit', async (e) => {
 
-    const nextId = 'EQ-' + Math.floor(1000 + Math.random() * 8999);
-    equipment.unshift({ id: nextId, name, category, total, available: total, status: 'good', condition: 'Good' });
-    EH.store.setEquipment(equipment);
+  e.preventDefault();
+
+  const name =
+    document.getElementById('eqName').value.trim();
+
+  const category =
+    document.getElementById('eqCategory').value;
+
+  const total =
+    parseInt(document.getElementById('eqTotal').value, 10);
+
+
+  if (!name || !total) {
+
+    EH.toast(
+      'Please enter the equipment name and total units.'
+    );
+
+    return;
+  }
+
+
+  try {
+
+    /*
+     * EDIT EXISTING EQUIPMENT
+     */
+    if (editingId !== null) {
+
+      const response = await fetch(
+        '../database/equipment.php',
+        {
+          method: 'PUT',
+
+          headers: {
+            'Content-Type': 'application/json'
+          },
+
+          body: JSON.stringify({
+            id: editingId,
+            name: name,
+            category: category,
+            total: total
+          })
+        }
+      );
+
+
+      const data = await response.json();
+
+
+      if (!data.success) {
+
+        throw new Error(
+          data.message ||
+          'Failed to update equipment'
+        );
+
+      }
+
+
+      EH.toast(
+        `${name} updated successfully`
+      );
+
+    }
+
+
+    /*
+     * ADD NEW EQUIPMENT
+     */
+    else {
+
+      const response = await fetch(
+        '../database/equipment.php',
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type': 'application/json'
+          },
+
+          body: JSON.stringify({
+            name: name,
+            category: category,
+            total: total
+          })
+        }
+      );
+
+
+      const data = await response.json();
+
+
+      if (!data.success) {
+
+        throw new Error(
+          data.message ||
+          'Failed to add equipment'
+        );
+
+      }
+
+
+      EH.toast(
+        `${name} added to inventory`
+      );
+
+    }
+
+
+    /*
+     * Reset form
+     */
+
     e.target.reset();
-    addModal.classList.remove('open');
-    EH.toast(`${name} added to inventory`);
-    render();
-  });
 
-  render();
+    editingId = null;
+
+    document.getElementById(
+      'equipmentModalTitle'
+    ).textContent = 'Add equipment';
+
+    document.getElementById(
+      'equipmentSubmit'
+    ).textContent = 'Save item';
+
+
+    addModal.classList.remove('open');
+
+    await loadEquipment();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    EH.toast(
+      error.message ||
+      'Database operation failed'
+    );
+
+  }
+
+});
+
+  loadEquipment();
 </script>
 </body>
 </html>
